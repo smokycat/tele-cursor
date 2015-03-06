@@ -3,7 +3,9 @@ HTTP = require 'http'
 WS = require 'socket.io'
 
 SERVER = HTTP.createServer (req, res) ->
-  FS.createReadStream 'public' + req.url
+  path = req.url.split('?')[0]
+  path = '/index.html' if path is '/'
+  FS.createReadStream 'public' + path
   .on 'error', ->
     res.writeHead 404, {"Content-Type":"text/html"}
     res.end '404 not found'
@@ -20,9 +22,10 @@ idTable = {}
 IO.sockets.on "connection", (socket) ->
   id = ++count
 
-  socket.on "connected", (name) ->
+  socket.on "connected", (argName) ->
+    name = decodeURIComponent argName
     idTable[id] = name
-    IO.sockets.emit "connected", {id: id, name: name}
+    IO.sockets.emit "connected", [id, name]
 
   socket.on "tele-cursor", (data) ->
     IO.sockets.emit "tele-cursor", [id, data[0], data[1]]
