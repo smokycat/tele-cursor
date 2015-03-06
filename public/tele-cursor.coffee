@@ -4,17 +4,13 @@ $ ->
   start = (name) -> socketio.emit 'connected', name
 
   addMessage = (msg) ->
-    $('body').prepend $("<div>#{msg.x} / #{msg.y}</div>")
+    $('body').prepend $("<div>#{JSON.stringify(msg)}</div>")
 
-  $('body').mousemove (event) ->
-    tmp = "[#{myName}] position : #{event.pageX} , #{event.pageY}"
-    socketio.emit 'tele-cursor', value: {
-      x: event.pageX
-      y: event.pageY
-    }
+  $('html').mousemove (event) ->
+    socketio.emit 'tele-cursor', [event.pageX, event.pageY]
 
-  socketio.on 'connected', (name) ->
-  socketio.on 'tele-cursor', (data) -> addMessage data.value
-  socketio.on 'disconnect', ->
+  socketio.on 'connected', (name) -> console.log name
+  socketio.on 'tele-cursor', (data) -> console.log JSON.stringify data
+  socketio.on 'disconnect', (name) -> console.log name
   myName = 'smokycat'
   start myName
