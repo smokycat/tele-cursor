@@ -23,11 +23,17 @@ IO.sockets.on "connection", (socket) ->
   id = ++count
 
   socket.on "connected", (argName) ->
-    name = decodeURIComponent argName
-    idTable[id] = name
-    IO.sockets.emit "connected", [id, name]
+    socket.emit "welcome", idTable
+    name = decodeURIComponent(argName)
+    name = "無名" if name is 'null'
+    idTable[id] = name: name, pos: [100, 100]
+    tmp = {}
+    tmp[id] = idTable[id]
+    IO.sockets.emit "connected", tmp
 
   socket.on "tele-cursor", (data) ->
+    return unless idTable[id]
+    idTable[id].pos = data
     IO.sockets.emit "tele-cursor", [id, data[0], data[1]]
 
   socket.on "disconnect", ->
