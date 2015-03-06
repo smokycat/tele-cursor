@@ -25,6 +25,9 @@ IO.sockets.on "connection", (socket) ->
   socket.on "connected", (argName) ->
     socket.emit "welcome", idTable
     name = decodeURIComponent(argName)
+      .replace /&/g, '&amp;'
+      .replace /</g, '&lt;'
+      .replace />/g, '&gt;'
     name = "無名" if name is 'null'
     idTable[id] = name: name, pos: [100, 100]
     tmp = {}
