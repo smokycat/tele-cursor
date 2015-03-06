@@ -9,8 +9,8 @@ $ ->
   $('html').mousemove (event) ->
     socketio.emit 'tele-cursor', [event.pageX, event.pageY]
 
-  socketio.on 'connected', (name) -> console.log name
+  socketio.on 'connected', (data) -> console.log JSON.stringify data
   socketio.on 'tele-cursor', (data) -> console.log JSON.stringify data
-  socketio.on 'disconnect', (name) -> console.log name
+  socketio.on 'disconnect', (id) -> console.log id
   myName = 'smokycat'
   start myName
